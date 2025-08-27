@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Call Simulator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .phone-screen {
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .screen-title {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: #6e8efb;
+            outline: none;
+        }
+        
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .btn-call {
+            background: #2ecc71;
+        }
+        
+        .btn-call:hover {
+            background: #27ae60;
+        }
+        
+        .btn-hangup {
+            background: #e74c3c;
+        }
+        
+        .btn-hangup:hover {
+            background: #c0392b;
+        }
+        
+        .call-status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            display: none;
+        }
+        
+        .ringing {
+            background: #ffeaa7;
+            color: #d35400;
+        }
+        
+        .connected {
+            background: #d5f5e3;
+            color: #27ae60;
+        }
+        
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .key {
+            padding: 15px;
+            background: #34495e;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .key:hover {
+            background: #2c3e50;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 500px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .btn {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-phone"></i> Phone Call Simulator</h1>
+        </div>
+        
+        <div class="phone-screen">
+            <h2 class="screen-title">Call Settings</h2>
+            
+            <div class="input-group">
+                <label for="customNumber"><i class="fas fa-phone"></i> Custom Phone Number</label>
+                <input type="text" id="customNumber" placeholder="Enter custom number">
+            </div>
+            
+            <div class="input-group">
+                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            
+            <button class="btn" id="saveBtn"><i class="fas fa-save"></i> Save Settings</button>
+            
+            <div class="call-status" id="callStatus">
+                <i class="fas fa-phone"></i> <span id="statusText">Ready to call</span>
+            </div>
+            
+            <button class="btn btn-call" id="callBtn"><i class="fas fa-phone"></i> Make Call</button>
+            <button class="btn btn-hangup" id="hangupBtn"><i class="fas fa-phone-slash"></i> Hang Up</button>
+            
+            <div class="keypad">
+                <button class="key">1</button>
+                <button class="key">2</button>
+                <button class="key">3</button>
+                <button class="key">4</button>
+                <button class="key">5</button>
+                <button class="key">6</button>
+                <button class="key">7</button>
+                <button class="key">8</button>
+                <button class="key">9</button>
+                <button class="key">*</button>
+                <button class="key">0</button>
+                <button class="key">#</button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to Use:</h3>
+            <ol>
+                <li>Enter a custom phone number and password</li>
+                <li>Click "Save Settings" to save your configuration</li>
+                <li>Click "Make Call" to simulate a phone call</li>
+                <li>The phone will ring and connect when answered</li>
+                <li>Use the keypad to simulate dialing numbers</li>
+                <li>Click "Hang Up" to end the call</li>
+            </ol>
+        </div>
+        
+        <div class="footer">
+            <p>Phone Call Simulation System &copy; 2023</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const customNumber = document.getElementById('customNumber');
+            const password = document.getElementById('password');
+            const saveBtn = document.getElementById('saveBtn');
+            const callBtn = document.getElementById('callBtn');
+            const hangupBtn = document.getElementById('hangupBtn');
+            const callStatus = document.getElementById('callStatus');
+            const statusText = document.getElementById('statusText');
+            const keys = document.querySelectorAll('.key');
+            
+            // Save settings
+            saveBtn.addEventListener('click', function() {
+                if (customNumber.value.trim() === '' || password.value.trim() === '') {
+                    alert('Please enter both phone number and password');
+                    return;
+                }
+                
+                // In a real application, you would save this to a database
+                // For this demo, we'll just show a confirmation
+                alert('Settings saved successfully!');
+            });
+            
+            // Make call
+            callBtn.addEventListener('click', function() {
+                if (customNumber.value.trim() === '') {
+                    alert('Please enter a custom phone number first');
+                    return;
+                }
+                
+                // Show ringing status
+                callStatus.style.display = 'block';
+                callStatus.className = 'call-status ringing';
+                statusText.innerHTML = 'Ringing... <i class="fas fa-phone-volume"></i>';
+                
+                // Simulate call connection after 3 seconds
+                setTimeout(function() {
+                    callStatus.className = 'call-status connected';
+                    statusText.innerHTML = 'Connected to: ' + customNumber.value + ' <i class="fas fa-phone-alt"></i>';
+                }, 3000);
+            });
+            
+            // Hang up call
+            hangupBtn.addEventListener('click', function() {
+                callStatus.style.display = 'none';
+            });
+            
+            // Keypad functionality
+            keys.forEach(key => {
+                key.addEventListener('click', function() {
+                    // Simulate key press sound (in a real app)
+                    console.log('Pressed: ', this.textContent);
+                });
+            });
+        });
+    </script>
+</body>
+  </html>
